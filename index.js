@@ -1,24 +1,26 @@
-import express, { json } from 'express';
-import connectDB from './config/db.js';
-import { router as userRouter } from './routes/userRoutes.js';
-import { router as quoteRouter } from './routes/quoteRoutes.js';
+// todolist/index.js
+import express from 'express';
+import dotenv from 'dotenv';
 import cors from 'cors';
+import connectDB from './config/db.js'; // Import the database connection function
+import todolist from './routes/todolistRoutes.js'; // Import the routes
 
-const port = process.env.PORT || 3001;
+dotenv.config(); // Load environment variables from .env
+
 const app = express();
-app.use(cors());
-app.use(json());
+const PORT = process.env.PORT || 5000;
 
+// Middleware
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse incoming JSON requests
+
+// Connect to MongoDB
 connectDB();
 
-app.use('/api/users', userRouter);
-app.use('/api/quotes', quoteRouter);
+// Use routes
+app.use('/api', todolist);
 
-app.get('/api/Hello', (req, res) => {
-    res.send('Hello World!');
+// Start the server
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running at http://localhost:${PORT}`);
 });
-
-app.listen(port, () => {
-    console.log(`Active on port ${port}`);
-});
-
